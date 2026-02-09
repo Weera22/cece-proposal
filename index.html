@@ -22,7 +22,7 @@
       border-radius: 25px;
       text-align: center;
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-      max-width: 350px;
+      max-width: 360px;
       z-index: 2;
     }
 
@@ -35,19 +35,16 @@
       margin-bottom: 15px;
     }
 
-    h1 {
-      color: #6a11cb;
-      margin-bottom: 10px;
-    }
+    h1 { color: #6a11cb; }
+    h2 { color: #2575fc; }
 
-    h2 {
-      color: #2575fc;
-      margin-bottom: 20px;
-    }
+    p { color: #333; }
 
-    p {
-      color: #333;
-      margin-bottom: 20px;
+    .countdown {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 15px 0;
+      color: #ff4d6d;
     }
 
     .buttons {
@@ -86,57 +83,108 @@
     }
 
     @keyframes float {
-      from {
-        transform: translateY(100vh);
-      }
-      to {
-        transform: translateY(-10vh);
-      }
+      from { transform: translateY(100vh); }
+      to { transform: translateY(-10vh); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Background music -->
-  <audio autoplay loop>
-    <source src="still.mp3" type="audio/mpeg">
-  </audio>
+<audio autoplay loop>
+  <source src="still.mp3" type="audio/mpeg">
+</audio>
 
-  <div class="card">
-    <img src="cece.jpg" alt="Cece" class="photo">
+<div id="content"></div>
 
-    <h1>Cece 💖</h1>
-    <p>
-      Every smile, every moment, every memory with you means more than words can say.
-    </p>
+<script>
+  // PAGE LOCK CHECK
+  if (localStorage.getItem("valentineLocked")) {
+    document.getElementById("content").innerHTML = `
+      <div class="card">
+        <h1>💖 Moment Sealed 💖</h1>
+        <p>This Valentine moment has already been opened.<br>
+        Some things are meant to happen once ❤️</p>
+      </div>
+    `;
+  } else {
+    showProposal();
+  }
 
-    <h2>Will you be my Valentine? 🌹</h2>
+  function showProposal() {
+    document.getElementById("content").innerHTML = `
+      <div class="card">
+        <img src="cece.jpg" class="photo" alt="Cece">
+        <h1>Cece 💖</h1>
+        <p>Every moment with you feels like a blessing.</p>
 
-    <div class="buttons">
-      <button id="yesBtn">Yes 💕</button>
-      <button id="noBtn">No 🙈</button>
-    </div>
-  </div>
+        <div class="countdown" id="countdown"></div>
 
-  <script>
+        <h2>Will you be my Valentine? 🌹</h2>
+
+        <div class="buttons">
+          <button id="yesBtn">Yes 💕</button>
+          <button id="noBtn">No 🙈</button>
+        </div>
+      </div>
+    `;
+
+    startCountdown();
+    setupButtons();
+    floatHearts();
+  }
+
+  function setupButtons() {
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
 
     noBtn.addEventListener("mouseover", () => {
-      const x = Math.random() * (window.innerWidth - 100);
-      const y = Math.random() * (window.innerHeight - 50);
       noBtn.style.position = "absolute";
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
+      noBtn.style.left = Math.random() * (window.innerWidth - 100) + "px";
+      noBtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
     });
 
     yesBtn.addEventListener("click", () => {
-      document.body.innerHTML = `
+      localStorage.setItem("valentineLocked", "true");
+
+      document.getElementById("content").innerHTML = `
         <div class="card">
           <h1>Cece 💖</h1>
           <h2>You said YES! 🎉</h2>
-          <p>
+          <p>This moment is now forever ours 🌹❤️</p>
+        </div>
+      `;
+    });
+  }
 
+  function startCountdown() {
+    const countdownEl = document.getElementById("countdown");
+    const valentine = new Date(new Date().getFullYear(), 1, 14);
+
+    setInterval(() => {
+      const now = new Date();
+      const diff = valentine - now;
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      countdownEl.innerHTML =
+        `Valentine’s Day in ${days}d ${hours}h ${minutes}m ${seconds}s 💘`;
+    }, 1000);
+  }
+
+  function floatHearts() {
+    for (let i = 0; i < 25; i++) {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (3 + Math.random() * 4) + "s";
+      document.body.appendChild(heart);
+    }
+  }
+</script>
 
 </body>
 </html>
